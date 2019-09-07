@@ -1,5 +1,5 @@
 {
-    "name": "oli/doctrine-fixtures",
+    "name": "oligus/doctrine-fixtures",
     "description": "Doctrine fixtures",
     "type": "library",
     "license": "MIT",
