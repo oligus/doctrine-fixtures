@@ -5,7 +5,7 @@ Simple fixture loader for Doctrine.
 [![Build Status](https://travis-ci.org/oligus/doctrine-fixtures.svg?branch=master)](https://travis-ci.org/oligus/doctrine-fixtures)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Codecov.io](https://codecov.io/gh/oligus/doctrine-fixtures/branch/master/graphs/badge.svg)](https://codecov.io/gh/oligus/doctrine-fixtures)
-[![Maintainability](https://api.codeclimate.com/v1/badges/db45a4d29b976060fe8a/maintainability)](https://codeclimate.com/github/oligus/doctrine-fixtures/maintainability)
+[![Maintainability](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/oligus/doctrine-fixtures/maintainability)
 
 Load XML fixtures into database using entity manager.
 
