@@ -32,7 +32,7 @@ interface Loader
     public function loadFile(string $file): void;
 
     /**
-     * @return array
+     * @return array<int,string>
      */
     public function getTables(): array;
 }

@@ -9,6 +9,8 @@ use Tests\Doctrine\Entities\Accounts;
 use Tests\Doctrine\Entities\Users;
 use Tests\TestCase;
 use Exception;
+use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\Tools\ToolsException;
 
 /**
  * Class XmlLoaderTest
@@ -31,8 +33,8 @@ class FixtureManagerTest extends TestCase
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\ORM\Tools\ToolsException
+     * @throws DBALException
+     * @throws ToolsException
      */
     public function testLoadFile()
     {

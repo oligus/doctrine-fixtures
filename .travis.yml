@@ -1,0 +1,15 @@
+language: php
+php:
+  - '7.2'
+
+install:
+  - composer install
+  - pecl install ast
+
+script:
+  - composer test-coverage
+  - composer lint
+  - composer analyze
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

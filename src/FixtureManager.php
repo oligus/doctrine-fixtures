@@ -7,6 +7,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use DoctrineFixtures\Loaders\Loader;
 use Doctrine\ORM\Tools\ToolsException;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\ORMInvalidArgumentException;
 
 /**
  * Class FixtureManager
@@ -14,7 +15,6 @@ use Doctrine\DBAL\DBALException;
  */
 class FixtureManager
 {
-
     /**
      * @var EntityManager
      */
@@ -31,6 +31,7 @@ class FixtureManager
      * @param Loader $loader
      * @throws DBALException
      * @throws ToolsException
+     * @throws ORMInvalidArgumentException
      */
     public function __construct(EntityManager $em, Loader $loader)
     {
@@ -45,6 +46,7 @@ class FixtureManager
     /**
      * @throws DBALException
      * @throws ToolsException
+     * @throws ORMInvalidArgumentException
      */
     public function createSchema(): void
     {
@@ -65,7 +67,7 @@ class FixtureManager
         $connection = $this->em->getConnection();
         $connection->executeQuery('PRAGMA foreign_keys = OFF');
 
-        foreach($tables as $tableName) {
+        foreach ($tables as $tableName) {
             $sql = 'DROP TABLE IF EXISTS ' . $tableName;
             $connection->executeQuery($sql);
         }
@@ -73,11 +75,17 @@ class FixtureManager
         $connection->executeQuery('PRAGMA foreign_keys = ON');
     }
 
+    /**
+     *
+     */
     public function loadAll(): void
     {
         $this->loader->loadAll();
     }
 
+    /**
+     * @param string $file
+     */
     public function loadFile(string $file): void
     {
         $this->loader->loadFile($file);

@@ -14,7 +14,7 @@ use Exception;
 class XmlLoader implements Loader
 {
     /**
-     * @var array
+     * @var array<int,string>
      */
     private $files = [];
 
@@ -33,6 +33,25 @@ class XmlLoader implements Loader
     }
 
     /**
+     * @param string $path
+     * @return array<int,string>
+     */
+    private function scanDirectory(string $path): array
+    {
+        $files = [];
+
+        if (is_dir($path)) {
+            foreach (glob($path . "/*.xml") as $file) {
+                if (is_string($file)) {
+                    $files[] = $file;
+                }
+            }
+        }
+
+        return $files;
+    }
+
+    /**
      * @param EntityManager $em
      */
     public function setEm(EntityManager $em): void
@@ -41,12 +60,11 @@ class XmlLoader implements Loader
     }
 
     /**
-     * @return mixed|void
      * @throws Exception
      */
     public function loadAll(): void
     {
-        foreach($this->files as $file) {
+        foreach ($this->files as $file) {
             $this->loadFile($file);
         }
     }
@@ -57,24 +75,15 @@ class XmlLoader implements Loader
      */
     public function loadFile(string $file): void
     {
-        if(!is_file($file) || !is_readable($file)) {
+        if (!is_file($file) || !is_readable($file)) {
             throw new Exception('Could not read ' . $file);
         }
 
         $xml = simplexml_load_file($file);
-        $this->loadTable($xml);
-    }
 
-    public function getTables(): array
-    {
-        $tables = [];
-
-        foreach($this->files as $file) {
-            $xml = simplexml_load_file($file);
-            $tables[] = $this->getAttribute($xml->database->table_data, 'name');
+        if ($xml) {
+            $this->loadTable($xml);
         }
-
-        return $tables;
     }
 
     /**
@@ -87,10 +96,10 @@ class XmlLoader implements Loader
 
         $data = [];
 
-        foreach($rows as $row) {
-            foreach($row->field as $element) {
+        foreach ($rows as $row) {
+            foreach ($row->field as $element) {
                 $field = $this->getAttribute($element, 'name');
-                $value = (string) $element;
+                $value = (string)$element;
 
                 $data[$field] = $value;
             }
@@ -107,33 +116,30 @@ class XmlLoader implements Loader
     }
 
     /**
-     * @param string $path
-     * @return array
+     * @param SimpleXMLElement $element
+     * @param string $attribute
+     * @return string
      */
-    private function scanDirectory(string $path): array
+    private function getAttribute(SimpleXMLElement $element, string $attribute): string
     {
-        $files = [];
+        $result = '';
 
-        if (is_dir($path)) {
-            foreach (glob($path . "/*.xml") as $file) {
-                $files[] = $file;
-            }
+        if (isset($element[$attribute])) {
+            $result = (string)$element[$attribute];
         }
 
-        return $files;
+        return $result;
     }
 
-    /**
-     * @param $object
-     * @param $attribute
-     * @return string|null
-     */
-    private function getAttribute($object, $attribute): ?string
+    public function getTables(): array
     {
-        if(isset($object[$attribute])) {
-            return (string) $object[$attribute];
+        $tables = [];
+
+        foreach ($this->files as $file) {
+            $xml = simplexml_load_file((string)$file);
+            $tables[] = $this->getAttribute($xml->database->table_data, 'name');
         }
 
-        return null;
+        return $tables;
     }
 }

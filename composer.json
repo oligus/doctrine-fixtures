@@ -9,7 +9,21 @@
             "email": "oli.gustafsson@gmail.com"
         }
     ],
+    "config": {
+        "platform": {
+            "php": "7.2"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "coverage": "vendor/bin/phpunit --coverage-html tests/coverage",
+        "watch": "vendor/bin/phpunit-watcher watch",
+        "lint": "vendor/bin/phpcs --standard=ruleset.xml ./src",
+        "lint-fix": "vendor/bin/phpcbf --standard=ruleset.xml ./src",
+        "analyze": "vendor/bin/phan --color --progress-bar"
+    },
     "require": {
+        "php": ">=7.2",
         "ext-simplexml": "*"
     },
     "require-dev": {
@@ -17,7 +31,9 @@
         "phpunit/phpunit": "^8.3",
         "doctrine/orm": "^2.6",
         "symfony/var-dumper": "^4.3",
-        "spatie/phpunit-snapshot-assertions": "^2.1"
+        "spatie/phpunit-snapshot-assertions": "^2.1",
+        "squizlabs/php_codesniffer": "^3.4",
+        "phan/phan": "^1.2"
     },
     "autoload": {
         "psr-4": {
