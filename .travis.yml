@@ -7,7 +7,7 @@ install:
   - pecl install ast
 
 script:
-  - composer test-coverage
+  - composer coverage
   - composer lint
   - composer analyze
 
