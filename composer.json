@@ -1,0 +1,37 @@
+{
+    "name": "oli/doctrine-fixtures",
+    "description": "Doctrine fixtures",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "oligus",
+            "email": "oli.gustafsson@gmail.com"
+        }
+    ],
+    "require": {
+        "ext-simplexml": "*"
+    },
+    "require-dev": {
+        "ext-json": "*",
+        "phpunit/phpunit": "^8.3",
+        "doctrine/orm": "^2.6",
+        "symfony/var-dumper": "^4.3",
+        "spatie/phpunit-snapshot-assertions": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "DoctrineFixtures\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests",
+            "Tests\\Src\\": "tests/src",
+            "Tests\\Doctrine\\": "tests/Doctrine"
+        },
+        "classmap": [
+            "tests/src"
+        ]
+    }
+}
