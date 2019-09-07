@@ -16,7 +16,7 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
-        "coverage": "vendor/bin/phpunit --coverage-html tests/coverage",
+        "coverage": "vendor/bin/phpunit --coverage-clover=coverage.xml",
         "watch": "vendor/bin/phpunit-watcher watch",
         "lint": "vendor/bin/phpcs --standard=ruleset.xml ./src",
         "lint-fix": "vendor/bin/phpcbf --standard=ruleset.xml ./src",
