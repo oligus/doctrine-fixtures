@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Doctrine;
+namespace DoctrineFixtures\Tests\Doctrine;
 
 use Doctrine\ORM\EntityManager;
 

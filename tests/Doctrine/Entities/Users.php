@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Doctrine\Entities;
+namespace DoctrineFixtures\Tests\Doctrine\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;

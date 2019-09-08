@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-use Tests\Doctrine\Bootstrap;
+use DoctrineFixtures\Tests\Doctrine\Bootstrap;
 
 define("ROOT_PATH", __DIR__);
 define('BASE_PATH', dirname(__DIR__));

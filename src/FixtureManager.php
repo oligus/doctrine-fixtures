@@ -39,7 +39,6 @@ class FixtureManager
         $this->em = $em;
 
         $this->loader->setEm($em);
-
         $this->createSchema();
     }
 

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Doctrine;
+namespace DoctrineFixtures\Tests\Doctrine;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
@@ -13,7 +13,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\ToolsException;
-use Tests\DumpSQLLogger;
+use DoctrineFixtures\Tests\DumpSQLLogger;
 
 /**
  * Class Bootstrap

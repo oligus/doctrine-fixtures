@@ -4,8 +4,8 @@ namespace Tests\Src\Loaders;
 
 use DoctrineFixtures\Loaders\XmlLoader;
 use Spatie\Snapshots\MatchesSnapshots;
-use Tests\Doctrine\Entities\Accounts;
-use Tests\TestCase;
+use DoctrineFixtures\Tests\Doctrine\Entities\Accounts;
+use DoctrineFixtures\Tests\TestCase;
 use Exception;
 
 /**

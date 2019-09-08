@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace Tests;
+namespace DoctrineFixtures\Tests;
 
 use Doctrine\DBAL\Logging\SQLLogger;
 use const PHP_EOL;

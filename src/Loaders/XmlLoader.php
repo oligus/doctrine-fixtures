@@ -92,7 +92,11 @@ class XmlLoader implements Loader
      */
     private function loadTable(SimpleXMLElement $xml)
     {
+        $tableName = $this->getAttribute($xml->database->table_data, 'name');
         $rows = $xml->database->table_data->row;
+        $connection = $this->em->getConnection();
+        $connection->executeQuery('PRAGMA foreign_keys = OFF');
+        $connection->executeQuery('DELETE FROM ' . $tableName);
 
         $data = [];
 
@@ -103,15 +107,10 @@ class XmlLoader implements Loader
 
                 $data[$field] = $value;
             }
+
+            $connection->insert($tableName, $data);
         }
 
-        $tableName = $this->getAttribute($xml->database->table_data, 'name');
-
-        $connection = $this->em->getConnection();
-
-        $connection->executeQuery('PRAGMA foreign_keys = OFF');
-        $connection->executeQuery('DELETE FROM ' . $tableName);
-        $connection->insert($tableName, $data);
         $connection->executeQuery('PRAGMA foreign_keys = ON');
     }
 
@@ -131,15 +130,18 @@ class XmlLoader implements Loader
         return $result;
     }
 
+    /**
+     * @return array<int,string>
+     */
     public function getTables(): array
     {
-        $tables = [];
+        $tables = $this->em->getConnection()->getSchemaManager()->listTableNames();
 
         foreach ($this->files as $file) {
             $xml = simplexml_load_file((string)$file);
             $tables[] = $this->getAttribute($xml->database->table_data, 'name');
         }
 
-        return $tables;
+        return array_unique($tables);
     }
 }

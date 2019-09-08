@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests;
+namespace DoctrineFixtures\Tests;
 
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use Doctrine\ORM\EntityManager;
@@ -8,7 +8,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionException;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\Doctrine\Manager;
+use DoctrineFixtures\Tests\Doctrine\Manager;
 
 /**
  * Class TestCase

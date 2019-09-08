@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Src;
+namespace DoctrineFixtures\Tests\Src;
 
 use DoctrineFixtures\FixtureManager;
 use DoctrineFixtures\Loaders\XmlLoader;
 use Spatie\Snapshots\MatchesSnapshots;
-use Tests\Doctrine\Entities\Accounts;
-use Tests\Doctrine\Entities\Users;
-use Tests\TestCase;
+use DoctrineFixtures\Tests\Doctrine\Entities\Accounts;
+use DoctrineFixtures\Tests\Doctrine\Entities\Users;
+use DoctrineFixtures\Tests\TestCase;
 use Exception;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Tools\ToolsException;

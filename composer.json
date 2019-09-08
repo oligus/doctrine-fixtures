@@ -42,9 +42,9 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests",
-            "Tests\\Src\\": "tests/src",
-            "Tests\\Doctrine\\": "tests/Doctrine"
+            "DoctrineFixtures\\Tests\\": "tests",
+            "DoctrineFixtures\\Tests\\Src\\": "tests/src",
+            "DoctrineFixtures\\Tests\\Doctrine\\": "tests/Doctrine"
         },
         "classmap": [
             "tests/src"
