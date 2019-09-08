@@ -4,6 +4,9 @@ namespace DoctrineFixtures;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
+use DoctrineFixtures\Drivers\Driver;
+use DoctrineFixtures\Drivers\Generic;
+use DoctrineFixtures\Drivers\SQLLite;
 use DoctrineFixtures\Loaders\Loader;
 use Doctrine\ORM\Tools\ToolsException;
 use Doctrine\DBAL\DBALException;
@@ -26,6 +29,11 @@ class FixtureManager
     private $loader;
 
     /**
+     * @var Driver
+     */
+    private $driver;
+
+    /**
      * FixtureManager constructor.
      * @param EntityManager $em
      * @param Loader $loader
@@ -38,9 +46,32 @@ class FixtureManager
         $this->loader = $loader;
         $this->em = $em;
 
-        $this->loader->setEm($em);
+        $this->driver = $this->getDriver();
+        $this->loader->setEm($this->em);
+        $this->loader->setDriver($this->driver);
         $this->createSchema();
     }
+
+    /**
+     * @return Driver
+     * @throws DBALException
+     */
+    private function getDriver(): Driver
+    {
+        $platform = $this->em->getConnection()->getDatabasePlatform()->getName();
+
+        switch ($platform) {
+            case 'sqlite':
+                $driver = new SQLLite();
+                break;
+
+            default:
+                $driver = new Generic();
+        }
+
+        return $driver;
+    }
+
 
     /**
      * @throws DBALException
@@ -62,16 +93,15 @@ class FixtureManager
     public function dropSchema(): void
     {
         $tables = $this->loader->getTables();
-
         $connection = $this->em->getConnection();
-        $connection->executeQuery('PRAGMA foreign_keys = OFF');
+        $connection->executeQuery($this->driver->disableForeignKeyQuery());
 
         foreach ($tables as $tableName) {
-            $sql = 'DROP TABLE IF EXISTS ' . $tableName;
+            $sql = $this->driver->dropTableQuery($tableName);
             $connection->executeQuery($sql);
         }
 
-        $connection->executeQuery('PRAGMA foreign_keys = ON');
+        $connection->executeQuery($this->driver->enableForeignKeyQuery());
     }
 
     /**

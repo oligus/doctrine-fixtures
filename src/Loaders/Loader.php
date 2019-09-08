@@ -3,6 +3,7 @@
 namespace DoctrineFixtures\Loaders;
 
 use Doctrine\ORM\EntityManager;
+use DoctrineFixtures\Drivers\Driver;
 
 /**
  * Interface Loader
@@ -20,6 +21,11 @@ interface Loader
      * @param EntityManager $em
      */
     public function setEm(EntityManager $em): void;
+
+    /**
+     * @param Driver $driver
+     */
+    public function setDriver(Driver $driver): void;
 
     /**
      *

@@ -2,6 +2,7 @@
 
 namespace Tests\Src\Loaders;
 
+use DoctrineFixtures\Drivers\SQLLite;
 use DoctrineFixtures\Loaders\XmlLoader;
 use Spatie\Snapshots\MatchesSnapshots;
 use DoctrineFixtures\Tests\Doctrine\Entities\Accounts;
@@ -23,6 +24,7 @@ class XmlLoaderTest extends TestCase
     {
         $loader = new XmlLoader(ROOT_PATH . '/fixtures');
         $loader->setEm($this->getEntityManager());
+        $loader->setDriver(new SQLLite());
         $loader->loadAll();
 
         $account = $this->getEntityManager()->getRepository(Accounts::class)->find(1);

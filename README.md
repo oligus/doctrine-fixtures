@@ -32,7 +32,7 @@ $fixture->loadFile('path/to/fixtures/data_table.xml');
 #### Creating XML fixture from mysql database
 
 ```bash
-$ mysqldump -h localhost -u username --password=passord --xml -t database data_table --where="id='1'"
+$ mysqldump -h localhost -u username --password=password --xml -t database data_table --where="id='1'"
 ```
 
 

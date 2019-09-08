@@ -4,6 +4,7 @@ namespace DoctrineFixtures\Loaders;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
+use DoctrineFixtures\Drivers\Driver;
 use SimpleXMLElement;
 use Exception;
 
@@ -22,6 +23,19 @@ class XmlLoader implements Loader
      * @var EntityManager
      */
     private $em;
+
+    /**
+     * @var Driver
+     */
+    private $driver;
+
+    /**
+     * @param Driver $driver
+     */
+    public function setDriver(Driver $driver): void
+    {
+        $this->driver = $driver;
+    }
 
     /**
      * XmlLoader constructor.
@@ -95,8 +109,9 @@ class XmlLoader implements Loader
         $tableName = $this->getAttribute($xml->database->table_data, 'name');
         $rows = $xml->database->table_data->row;
         $connection = $this->em->getConnection();
-        $connection->executeQuery('PRAGMA foreign_keys = OFF');
-        $connection->executeQuery('DELETE FROM ' . $tableName);
+
+        $connection->executeQuery($this->driver->disableForeignKeyQuery());
+        $connection->executeQuery($this->driver->truncateTableQuery($tableName));
 
         $data = [];
 
@@ -111,7 +126,7 @@ class XmlLoader implements Loader
             $connection->insert($tableName, $data);
         }
 
-        $connection->executeQuery('PRAGMA foreign_keys = ON');
+        $connection->executeQuery($this->driver->enableForeignKeyQuery());
     }
 
     /**
