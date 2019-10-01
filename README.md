@@ -23,7 +23,7 @@ $fixture->loadAll();
 
 *Load a single fixture file*
 ```php
-$fixture = new FixtureManager($em, new XmlLoader('path/to/fixtures'));
+$fixture = new FixtureManager($em, new XmlLoader());
 $fixture->loadFile('path/to/fixtures/data_table.xml');
 ```
 

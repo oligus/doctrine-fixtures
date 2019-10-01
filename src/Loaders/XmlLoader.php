@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use DoctrineFixtures\Drivers\Driver;
 use SimpleXMLElement;
 use Exception;
+use DOMDocument;
 
 /**
  * Interface Loader
@@ -30,6 +31,11 @@ class XmlLoader implements Loader
     private $driver;
 
     /**
+     * @var string
+     */
+    private $path;
+
+    /**
      * @param Driver $driver
      */
     public function setDriver(Driver $driver): void
@@ -39,10 +45,21 @@ class XmlLoader implements Loader
 
     /**
      * XmlLoader constructor.
+     * @param string|null $path
+     */
+    public function __construct(?string $path = null)
+    {
+        if(!empty($path)) {
+            $this->setPath($path);
+        }
+    }
+
+    /**
      * @param string $path
      */
-    public function __construct(string $path)
+    public function setPath(string $path): void
     {
+        $this->path = $path;
         $this->files = $this->scanDirectory($path);
     }
 
@@ -101,6 +118,28 @@ class XmlLoader implements Loader
     }
 
     /**
+     * XXX Under development, xsd files not up to date.
+     *
+     * @param string $xml
+     * @return bool
+     */
+    private function isValidXml(string $xml): bool
+    {
+        $dom = new DOMDocument();
+        $dom->loadXML($xml, LIBXML_NOBLANKS); // Or load if filename required
+
+        $xsd = file_get_contents('https://raw.githubusercontent.com/lindenb/xsd-sandbox/master/schemas/mysql/mysqldump.xsd');
+
+        if (!$dom->schemaValidate(realpath(__DIR__) . '/XmlSchema/mysqldump.xsd')) // Or schemaValidateSource if string used.
+        {
+            // You have an error in the XML file
+        }
+
+        dump($xml);
+        die;
+    }
+
+    /**
      * @param SimpleXMLElement $xml
      * @throws DBALException
      */
@@ -116,9 +155,21 @@ class XmlLoader implements Loader
         $data = [];
 
         foreach ($rows as $row) {
+            /** @var SimpleXMLElement $element */
             foreach ($row->field as $element) {
                 $field = $this->getAttribute($element, 'name');
                 $value = (string)$element;
+
+                /** @var SimpleXMLElement $attributes */
+                $attributes = $element->attributes('xsi', true);
+
+                if(!empty($attributes)) {
+                    $isNull = (bool) $attributes['nil'];
+
+                    if($isNull) {
+                        $value = null;
+                    }
+                }
 
                 $data[$field] = $value;
             }

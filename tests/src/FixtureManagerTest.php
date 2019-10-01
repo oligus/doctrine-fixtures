@@ -25,8 +25,8 @@ class FixtureManagerTest extends TestCase
      */
     public function testLoadAll()
     {
-        $fixture = new FixtureManager($this->getEntityManager(), new XmlLoader(ROOT_PATH . '/fixtures'));
-        $fixture->loadAll();
+        $fixture = new FixtureManager($this->getEntityManager(), new XmlLoader());
+        $fixture->loadAll(ROOT_PATH . '/fixtures');
 
         $user = $this->getEntityManager()->getRepository(Users::class)->find(1);
         $this->assertMatchesJsonSnapshot(json_encode($user));
@@ -38,7 +38,7 @@ class FixtureManagerTest extends TestCase
      */
     public function testLoadFile()
     {
-        $fixture = new FixtureManager($this->getEntityManager(), new XmlLoader(ROOT_PATH . '/fixtures'));
+        $fixture = new FixtureManager($this->getEntityManager(), new XmlLoader());
         $fixture->loadFile(ROOT_PATH . '/fixtures/accounts.xml');
 
         $user = $this->getEntityManager()->getRepository(Users::class)->find(1);

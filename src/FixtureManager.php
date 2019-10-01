@@ -97,6 +97,10 @@ class FixtureManager
         $connection->executeQuery($this->driver->disableForeignKeyQuery());
 
         foreach ($tables as $tableName) {
+            if($this->driver->isProtectedTable($tableName)) {
+                continue;
+            }
+
             $sql = $this->driver->dropTableQuery($tableName);
             $connection->executeQuery($sql);
         }
@@ -105,10 +109,13 @@ class FixtureManager
     }
 
     /**
-     *
+     * @param string|null $path
      */
-    public function loadAll(): void
+    public function loadAll(?string $path = null): void
     {
+        if(!empty($path)) {
+            $this->loader->setPath($path);
+        }
         $this->loader->loadAll();
     }
 
@@ -119,4 +126,14 @@ class FixtureManager
     {
         $this->loader->loadFile($file);
     }
+
+    /**
+     * @return Loader
+     */
+    public function getLoader(): Loader
+    {
+        return $this->loader;
+    }
+
+
 }

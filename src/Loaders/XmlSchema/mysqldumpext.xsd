@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://xsd.mysql.com/extension/"
+        elementFormDefault="unqualified"
+        attributeFormDefault="qualified"
+        xmlns:ext="http://xsd.mysql.com/extension/"
+>
+
+    <xs:attributeGroup name="descriptionExt">
+        <xs:attribute name="label" type="xs:string"/>
+        <xs:attribute name="description" type="xs:string"/>
+        <xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="rdfURI" type="xs:anyURI" use="optional"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="fieldExt">
+        <xs:attributeGroup ref="ext:descriptionExt"/>
+        <xs:attribute name="updatable" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="multiline" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="pattern" type="xs:string" use="optional"/>
+    </xs:attributeGroup>
+</xs:schema>

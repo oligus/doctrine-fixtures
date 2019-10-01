@@ -9,6 +9,13 @@ namespace DoctrineFixtures\Drivers;
 class SQLLite extends AbstractDriver
 {
     /**
+     * Table that should not be dropped
+     */
+    protected $protectedTables = [
+        'sqlite_sequence'
+    ];
+
+    /**
      * @return string
      */
     public function disableForeignKeyQuery(): string

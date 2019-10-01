@@ -15,7 +15,7 @@ interface Loader
      * Loader constructor.
      * @param string $path
      */
-    public function __construct(string $path);
+    public function __construct(?string $path);
 
     /**
      * @param EntityManager $em
@@ -41,4 +41,9 @@ interface Loader
      * @return array<int,string>
      */
     public function getTables(): array;
+
+    /**
+     * @param string $path
+     */
+    public function setPath(string $path): void;
 }

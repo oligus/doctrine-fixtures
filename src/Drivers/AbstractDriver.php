@@ -8,5 +8,17 @@ namespace DoctrineFixtures\Drivers;
  */
 abstract class AbstractDriver implements Driver
 {
+    /**
+     * Table that should not be dropped
+     */
+    protected $protectedTables = [];
 
+    /**
+     * @param $table
+     * @return bool
+     */
+    public function isProtectedTable($table): bool
+    {
+        return in_array($table, $this->protectedTables);
+    }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Src\Loaders;
 
 use DoctrineFixtures\Drivers\SQLLite;
+use DoctrineFixtures\FixtureManager;
 use DoctrineFixtures\Loaders\XmlLoader;
 use Spatie\Snapshots\MatchesSnapshots;
 use DoctrineFixtures\Tests\Doctrine\Entities\Accounts;
@@ -29,5 +30,17 @@ class XmlLoaderTest extends TestCase
 
         $account = $this->getEntityManager()->getRepository(Accounts::class)->find(1);
         $this->assertMatchesJsonSnapshot(json_encode($account));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function xtestIsValidXml()
+    {
+        $xml = file_get_contents(ROOT_PATH . '/fixtures/accounts.xml');
+
+        $loader = new XmlLoader();
+        $method = $this->getMethod($loader, 'isValidXml');
+        $method->invoke($loader, $xml);
     }
 }

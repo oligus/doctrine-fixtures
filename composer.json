@@ -24,7 +24,10 @@
     },
     "require": {
         "php": ">=7.2",
-        "ext-simplexml": "*"
+        "ext-simplexml": "*",
+        "ext-libxml": "*",
+        "ext-dom": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "ext-json": "*",
