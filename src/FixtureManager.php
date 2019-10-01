@@ -97,7 +97,7 @@ class FixtureManager
         $connection->executeQuery($this->driver->disableForeignKeyQuery());
 
         foreach ($tables as $tableName) {
-            if($this->driver->isProtectedTable($tableName)) {
+            if ($this->driver->isProtectedTable($tableName)) {
                 continue;
             }
 
@@ -113,7 +113,7 @@ class FixtureManager
      */
     public function loadAll(?string $path = null): void
     {
-        if(!empty($path)) {
+        if (!empty($path)) {
             $this->loader->setPath($path);
         }
         $this->loader->loadAll();
@@ -134,6 +134,4 @@ class FixtureManager
     {
         return $this->loader;
     }
-
-
 }

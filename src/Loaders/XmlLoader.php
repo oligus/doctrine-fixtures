@@ -49,7 +49,7 @@ class XmlLoader implements Loader
      */
     public function __construct(?string $path = null)
     {
-        if(!empty($path)) {
+        if (!empty($path)) {
             $this->setPath($path);
         }
     }
@@ -122,6 +122,7 @@ class XmlLoader implements Loader
      *
      * @param string $xml
      * @return bool
+     * @suppress PhanUnusedVariable
      */
     private function isValidXml(string $xml): bool
     {
@@ -130,9 +131,8 @@ class XmlLoader implements Loader
 
         $xsd = file_get_contents('https://raw.githubusercontent.com/lindenb/xsd-sandbox/master/schemas/mysql/mysqldump.xsd');
 
-        if (!$dom->schemaValidate(realpath(__DIR__) . '/XmlSchema/mysqldump.xsd')) // Or schemaValidateSource if string used.
-        {
-            // You have an error in the XML file
+        if (!$dom->schemaValidate(realpath(__DIR__) . '/XmlSchema/mysqldump.xsd')) { // Or schemaValidateSource if string used.
+        // You have an error in the XML file
         }
 
         dump($xml);
@@ -163,10 +163,10 @@ class XmlLoader implements Loader
                 /** @var SimpleXMLElement $attributes */
                 $attributes = $element->attributes('xsi', true);
 
-                if(!empty($attributes)) {
+                if (!empty($attributes)) {
                     $isNull = (bool) $attributes['nil'];
 
-                    if($isNull) {
+                    if ($isNull) {
                         $value = null;
                     }
                 }

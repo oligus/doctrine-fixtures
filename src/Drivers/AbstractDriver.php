@@ -14,10 +14,10 @@ abstract class AbstractDriver implements Driver
     protected $protectedTables = [];
 
     /**
-     * @param $table
+     * @param string $table
      * @return bool
      */
-    public function isProtectedTable($table): bool
+    public function isProtectedTable(string $table): bool
     {
         return in_array($table, $this->protectedTables);
     }

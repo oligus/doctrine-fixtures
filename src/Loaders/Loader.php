@@ -13,7 +13,7 @@ interface Loader
 {
     /**
      * Loader constructor.
-     * @param string $path
+     * @param string|null $path
      */
     public function __construct(?string $path);
 

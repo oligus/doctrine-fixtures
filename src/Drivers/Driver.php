@@ -31,4 +31,10 @@ interface Driver
      * @return string
      */
     public function truncateTableQuery(string $tableName): string;
+
+    /**
+     * @param $table
+     * @return bool
+     */
+    public function isProtectedTable(string $table): bool;
 }
