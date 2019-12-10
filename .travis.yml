@@ -10,7 +10,7 @@ script:
   - composer coverage
   - composer lint
   - composer md
-  - composer analyze
+  - composer analyze-noop
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

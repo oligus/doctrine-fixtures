@@ -71,12 +71,16 @@ class XmlLoader implements Loader
     {
         $files = [];
 
-        if (is_dir($path)) {
-            foreach (glob($path . "/*.xml") as $file) {
-                if (is_string($file)) {
-                    $files[] = $file;
-                }
+        if (!is_dir($path)) {
+            return $files;
+        }
+
+        foreach (glob($path . "/*.xml") as $file) {
+            if (!is_string($file)) {
+                continue;
             }
+
+            $files[] = $file;
         }
 
         return $files;
@@ -156,22 +160,10 @@ class XmlLoader implements Loader
         $data = [];
 
         foreach ($rows as $row) {
+
             /** @var SimpleXMLElement $element */
             foreach ($row->field as $element) {
-                $field = $this->getAttribute($element, 'name');
-                $value = (string)$element;
-
-                /** @var SimpleXMLElement $attributes */
-                $attributes = $element->attributes('xsi', true);
-
-                if (!empty($attributes)) {
-                    $isNull = (bool) $attributes['nil'];
-
-                    if ($isNull) {
-                        $value = null;
-                    }
-                }
-
+                list($field, $value) = $this->getFieldValue($element);
                 $data[$field] = $value;
             }
 
@@ -210,5 +202,27 @@ class XmlLoader implements Loader
         }
 
         return array_unique($tables);
+    }
+
+    /**
+     * @return array{0:string,1:?string}
+     */
+    private function getFieldValue(SimpleXMLElement $element): array
+    {
+        $field = $this->getAttribute($element, 'name');
+        $value = (string)$element;
+
+        /** @var SimpleXMLElement $attributes */
+        $attributes = $element->attributes('xsi', true);
+
+        if (!empty($attributes)) {
+            $isNull = (bool)$attributes['nil'];
+
+            if ($isNull) {
+                $value = null;
+            }
+        }
+
+        return array($field, $value);
     }
 }
