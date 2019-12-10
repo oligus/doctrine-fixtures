@@ -11,7 +11,7 @@
     ],
     "config": {
         "platform": {
-            "php": "7.2"
+            "php": "7.3"
         }
     },
     "scripts": {
@@ -26,7 +26,7 @@
         "analyze-noop": "phan --no-progress-bar --force-polyfill-parser"
     },
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.3",
         "ext-simplexml": "*",
         "ext-libxml": "*",
         "ext-dom": "*",
