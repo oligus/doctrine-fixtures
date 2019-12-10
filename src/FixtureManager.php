@@ -3,6 +3,7 @@
 namespace DoctrineFixtures;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\SchemaTool;
 use DoctrineFixtures\Drivers\Driver;
 use DoctrineFixtures\Drivers\Generic;
@@ -11,6 +12,7 @@ use DoctrineFixtures\Loaders\Loader;
 use Doctrine\ORM\Tools\ToolsException;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\DBAL\Connection;
 
 /**
  * Class FixtureManager
@@ -49,7 +51,6 @@ class FixtureManager
         $this->driver = $this->getDriver();
         $this->loader->setEm($this->em);
         $this->loader->setDriver($this->driver);
-        $this->createSchema();
     }
 
     /**
@@ -89,6 +90,36 @@ class FixtureManager
 
     /**
      * @throws DBALException
+     * @throws ToolsException
+     * @throws ORMInvalidArgumentException
+     * @phan-suppress PhanUndeclaredMethod
+     */
+    public function createTable(string $tableName): void
+    {
+        $connection = $this->em->getConnection();
+        $connection->executeQuery($this->driver->disableForeignKeyQuery());
+        $this->dropTable($connection, $tableName);
+        $this->em->getUnitOfWork()->clear();
+
+        $schemaTool = new SchemaTool($this->em);
+        $metaData = [];
+
+        /** @var ClassMetadata $meta */
+        foreach ($this->em->getMetadataFactory()->getAllMetadata() as $meta) {
+            $name = method_exists($meta, 'getTableName') ? $meta->getTableName() : null;
+
+            if ($name === $tableName) {
+                $metaData[] = $meta;
+                continue;
+            }
+        }
+
+        $schemaTool->createSchema($metaData);
+        $connection->executeQuery($this->driver->enableForeignKeyQuery());
+    }
+
+    /**
+     * @throws DBALException
      */
     public function dropSchema(): void
     {
@@ -97,22 +128,36 @@ class FixtureManager
         $connection->executeQuery($this->driver->disableForeignKeyQuery());
 
         foreach ($tables as $tableName) {
-            if ($this->driver->isProtectedTable($tableName)) {
-                continue;
-            }
-
-            $sql = $this->driver->dropTableQuery($tableName);
-            $connection->executeQuery($sql);
+            $this->dropTable($connection, $tableName);
         }
 
         $connection->executeQuery($this->driver->enableForeignKeyQuery());
     }
 
     /**
+     * @throws DBALException
+     */
+    public function dropTable(Connection $connection, string $tableName): void
+    {
+        if ($this->driver->isProtectedTable($tableName)) {
+            return;
+        }
+
+        $sql = $this->driver->dropTableQuery($tableName);
+        $connection->executeQuery($sql);
+    }
+
+    /**
      * @param string|null $path
+     * @throws DBALException
+     * @throws ToolsException
+     * @throws ORMInvalidArgumentException
+     * @throws ToolsException
      */
     public function loadAll(?string $path = null): void
     {
+        $this->createSchema();
+
         if (!empty($path)) {
             $this->loader->setPath($path);
         }
@@ -121,9 +166,15 @@ class FixtureManager
 
     /**
      * @param string $file
+     * @throws DBALException
+     * @throws ToolsException
+     * @throws ORMInvalidArgumentException
+     * @throws ToolsException
      */
     public function loadFile(string $file): void
     {
+        $this->createTable('accounts');
+
         $this->loader->loadFile($file);
     }
 

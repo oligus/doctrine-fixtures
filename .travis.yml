@@ -9,6 +9,7 @@ install:
 script:
   - composer coverage
   - composer lint
+  - composer md
   - composer analyze
 
 after_success:

@@ -112,7 +112,7 @@ class XmlLoader implements Loader
 
         $xml = simplexml_load_file($file);
 
-        if ($xml) {
+        if ($xml instanceof SimpleXMLElement) {
             $this->loadTable($xml);
         }
     }
@@ -123,7 +123,7 @@ class XmlLoader implements Loader
      * @param string $xml
      * @return bool
      * @suppress PhanUnusedVariable
-     */
+
     private function isValidXml(string $xml): bool
     {
         $dom = new DOMDocument();
@@ -138,6 +138,7 @@ class XmlLoader implements Loader
         dump($xml);
         die;
     }
+     */
 
     /**
      * @param SimpleXMLElement $xml

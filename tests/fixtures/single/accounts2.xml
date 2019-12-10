@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <database name="fixture_tests">
+        <table_data name="accounts">
+            <row>
+                <field name="id">1</field>
+                <field name="name">Test Account 1</field>
+                <field name="type">Guest</field>
+            </row>
+            <row>
+                <field name="id">2</field>
+                <field name="name">Test Account 2</field>
+                <field name="type">User</field>
+            </row>
+            <row>
+                <field name="id">3</field>
+                <field name="name">Test Account 3</field>
+                <field name="type">Admin</field>
+            </row>
+        </table_data>
+    </database>
+</mysqldump>

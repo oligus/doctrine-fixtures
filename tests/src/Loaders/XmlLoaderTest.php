@@ -24,6 +24,8 @@ class XmlLoaderTest extends TestCase
     public function testLoadAll()
     {
         $loader = new XmlLoader(ROOT_PATH . '/fixtures');
+        $fixture = new FixtureManager($this->getEntityManager(), $loader);
+        $fixture->createSchema();
         $loader->setEm($this->getEntityManager());
         $loader->setDriver(new SQLLite());
         $loader->loadAll();

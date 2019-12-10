@@ -1,0 +1,9 @@
+{
+    "id": 1,
+    "userName": "testuser",
+    "account": {
+        "id": 1,
+        "name": "Test Account",
+        "type": "Guest"
+    }
+}

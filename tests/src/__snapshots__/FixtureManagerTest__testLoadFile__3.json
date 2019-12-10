@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "name": "Test Account 1",
+        "type": "Guest"
+    },
+    {
+        "id": 2,
+        "name": "Test Account 2",
+        "type": "User"
+    },
+    {
+        "id": 3,
+        "name": "Test Account 3",
+        "type": "Admin"
+    }
+]

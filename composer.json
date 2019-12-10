@@ -15,12 +15,15 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit",
-        "coverage": "vendor/bin/phpunit --coverage-clover=coverage.xml",
+        "test": "phpunit",
+        "coverage": "phpunit --coverage-clover=coverage.xml",
         "watch": "vendor/bin/phpunit-watcher watch",
-        "lint": "vendor/bin/phpcs --standard=ruleset.xml ./src",
-        "lint-fix": "vendor/bin/phpcbf --standard=ruleset.xml ./src",
-        "analyze": "vendor/bin/phan --color --progress-bar"
+        "lint": "phpcs src",
+        "lint-fix": "phpcbf src",
+        "md": "phpmd src text phpmd.xml",
+        "md-xml": "phpmd src xml phpmd.xml",
+        "analyze": "phan --color --progress-bar --force-polyfill-parser",
+        "analyze-noop": "phan --no-progress-bar --force-polyfill-parser"
     },
     "require": {
         "php": ">=7.2",
@@ -36,7 +39,8 @@
         "symfony/var-dumper": "^4.3",
         "spatie/phpunit-snapshot-assertions": "^2.1",
         "squizlabs/php_codesniffer": "^3.4",
-        "phan/phan": "^1.2"
+        "phan/phan": "^2.4",
+        "phpmd/phpmd": "^2.7"
     },
     "autoload": {
         "psr-4": {

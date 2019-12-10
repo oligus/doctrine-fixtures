@@ -1,0 +1,6 @@
+.phan
+tests/
+.travis.yml
+phpcs.xml
+phpmd.xml
+phpunit.md
