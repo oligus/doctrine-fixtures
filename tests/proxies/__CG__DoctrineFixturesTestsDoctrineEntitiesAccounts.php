@@ -184,4 +184,15 @@ class Accounts extends \DoctrineFixtures\Tests\Doctrine\Entities\Accounts implem
         return parent::jsonSerialize();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getUsers(): \Doctrine\Common\Collections\Collection
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsers', []);
+
+        return parent::getUsers();
+    }
+
 }
