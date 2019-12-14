@@ -3,6 +3,7 @@
 namespace DoctrineFixtures\Tests\Doctrine\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use stdClass;
@@ -38,10 +39,15 @@ class Accounts implements JsonSerializable
     protected $type;
 
     /**
-     * @var ArrayCollection
+     * @var Collection
      * @ORM\OneToMany(targetEntity="Users", mappedBy="account")
      */
     protected $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     /**
      * @return stdClass
@@ -54,4 +60,11 @@ class Accounts implements JsonSerializable
             'type' => $this->type,
         ];
     }
+
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+
 }

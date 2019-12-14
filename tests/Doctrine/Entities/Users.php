@@ -4,7 +4,6 @@ namespace DoctrineFixtures\Tests\Doctrine\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
-use stdClass;
 
 /**
  * Class Users
@@ -36,9 +35,6 @@ class Users implements JsonSerializable
      */
     protected $account;
 
-    /**
-     * @return stdClass
-     */
     public function jsonSerialize(): array
     {
         return [
