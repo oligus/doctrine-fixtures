@@ -27,6 +27,11 @@ $fixture = new FixtureManager($em, new XmlLoader());
 $fixture->loadFile('path/to/fixtures/data_table.xml');
 ```
 
+### Availible Loaders
+
+* Xml Loader
+* Csv Loader
+
 ## Fixtures
 
 #### Creating XML fixture from mysql database
