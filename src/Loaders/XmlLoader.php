@@ -2,15 +2,13 @@
 
 namespace DoctrineFixtures\Loaders;
 
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use DoctrineFixtures\Drivers\Driver;
 use SimpleXMLElement;
 use Exception;
-use DOMDocument;
 
 /**
- * Interface Loader
+ * Class XmlLoader
  * @package DoctrineFixtures\Loaders
  */
 class XmlLoader implements Loader
@@ -122,31 +120,7 @@ class XmlLoader implements Loader
     }
 
     /**
-     * XXX Under development, xsd files not up to date.
-     *
-     * @param string $xml
-     * @return bool
-     * @suppress PhanUnusedVariable
-
-    private function isValidXml(string $xml): bool
-    {
-        $dom = new DOMDocument();
-        $dom->loadXML($xml, LIBXML_NOBLANKS); // Or load if filename required
-
-        $xsd = file_get_contents('https://raw.githubusercontent.com/lindenb/xsd-sandbox/master/schemas/mysql/mysqldump.xsd');
-
-        if (!$dom->schemaValidate(realpath(__DIR__) . '/XmlSchema/mysqldump.xsd')) { // Or schemaValidateSource if string used.
-        // You have an error in the XML file
-        }
-
-        dump($xml);
-        die;
-    }
-     */
-
-    /**
      * @param SimpleXMLElement $xml
-     * @throws DBALException
      */
     private function loadTable(SimpleXMLElement $xml)
     {
@@ -194,7 +168,13 @@ class XmlLoader implements Loader
      */
     public function getTables(): array
     {
-        $tables = $this->em->getConnection()->getSchemaManager()->listTableNames();
+        $connection = $this->em->getConnection();
+
+        if (method_exists($connection, 'createSchemaManager')) {
+            $tables = $connection->createSchemaManager()->listTableNames();
+        } else {
+            $tables = $connection->getSchemaManager()->listTableNames();
+        }
 
         foreach ($this->files as $file) {
             $xml = simplexml_load_file((string)$file);

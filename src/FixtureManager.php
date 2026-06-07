@@ -10,9 +10,9 @@ use DoctrineFixtures\Drivers\Generic;
 use DoctrineFixtures\Drivers\SQLLite;
 use DoctrineFixtures\Loaders\Loader;
 use Doctrine\ORM\Tools\ToolsException;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 
 /**
  * Class FixtureManager
@@ -39,7 +39,6 @@ class FixtureManager
      * FixtureManager constructor.
      * @param EntityManager $em
      * @param Loader $loader
-     * @throws DBALException
      * @throws ToolsException
      * @throws ORMInvalidArgumentException
      */
@@ -55,27 +54,20 @@ class FixtureManager
 
     /**
      * @return Driver
-     * @throws DBALException
      */
     private function getDriver(): Driver
     {
-        $platform = $this->em->getConnection()->getDatabasePlatform()->getName();
+        $platform = $this->em->getConnection()->getDatabasePlatform();
 
-        switch ($platform) {
-            case 'sqlite':
-                $driver = new SQLLite();
-                break;
-
-            default:
-                $driver = new Generic();
+        if ($platform instanceof SQLitePlatform) {
+            return new SQLLite();
         }
 
-        return $driver;
+        return new Generic();
     }
 
 
     /**
-     * @throws DBALException
      * @throws ToolsException
      * @throws ORMInvalidArgumentException
      */
@@ -89,7 +81,6 @@ class FixtureManager
     }
 
     /**
-     * @throws DBALException
      * @throws ToolsException
      * @throws ORMInvalidArgumentException
      * @phan-suppress PhanUndeclaredMethod
@@ -118,9 +109,6 @@ class FixtureManager
         $connection->executeQuery($this->driver->enableForeignKeyQuery());
     }
 
-    /**
-     * @throws DBALException
-     */
     public function dropSchema(): void
     {
         $tables = $this->loader->getTables();
@@ -134,9 +122,6 @@ class FixtureManager
         $connection->executeQuery($this->driver->enableForeignKeyQuery());
     }
 
-    /**
-     * @throws DBALException
-     */
     public function dropTable(Connection $connection, string $tableName): void
     {
         if ($this->driver->isProtectedTable($tableName)) {
@@ -149,10 +134,8 @@ class FixtureManager
 
     /**
      * @param string|null $path
-     * @throws DBALException
      * @throws ToolsException
      * @throws ORMInvalidArgumentException
-     * @throws ToolsException
      */
     public function loadAll(?string $path = null): void
     {
@@ -166,10 +149,8 @@ class FixtureManager
 
     /**
      * @param string $file
-     * @throws DBALException
      * @throws ToolsException
      * @throws ORMInvalidArgumentException
-     * @throws ToolsException
      */
     public function loadFile(string $file): void
     {
