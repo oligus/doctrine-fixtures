@@ -7,11 +7,13 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\SchemaTool;
 use DoctrineFixtures\Drivers\Driver;
 use DoctrineFixtures\Drivers\Generic;
+use DoctrineFixtures\Drivers\MySql;
 use DoctrineFixtures\Drivers\SQLLite;
 use DoctrineFixtures\Loaders\Loader;
 use Doctrine\ORM\Tools\ToolsException;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Platforms\SQLitePlatform;
 
 /**
@@ -61,6 +63,10 @@ class FixtureManager
 
         if ($platform instanceof SQLitePlatform) {
             return new SQLLite();
+        }
+
+        if ($platform instanceof AbstractMySQLPlatform) {
+            return new MySql();
         }
 
         return new Generic();
