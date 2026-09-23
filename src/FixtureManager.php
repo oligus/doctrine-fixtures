@@ -93,10 +93,39 @@ class FixtureManager
 
         $schema = $schemaTool->getSchemaFromMetadata($metadata);
         $this->makeIndexNamesUnique($schema);
+        $this->removeUnsupportedColumnOptions($schema);
 
         $connection = $this->em->getConnection();
         foreach ($schema->toSql($connection->getDatabasePlatform()) as $sql) {
             $connection->executeStatement($sql);
+        }
+    }
+
+    /**
+     * Drop MySQL-only column options that SQLite cannot honour, for SQLite only.
+     *
+     * A mapping sometimes has to pin a column's charset and collation: a legacy MySQL
+     * table may store one column as utf8mb4 inside an otherwise latin1 table, and unless
+     * the mapping says so every schema comparison proposes rewriting that column. Those
+     * options reach SQLite as a COLLATE clause it rejects outright - "no such collation
+     * sequence: utf8mb4_unicode_ci" - which aborts schema creation.
+     *
+     * Collation and charset govern how a value is compared and encoded on the server,
+     * never which value is stored, so dropping them from the test schema leaves fixture
+     * data unchanged while letting the mapping keep describing the real MySQL column.
+     *
+     * @param Schema $schema
+     */
+    private function removeUnsupportedColumnOptions(Schema $schema): void
+    {
+        foreach ($schema->getTables() as $table) {
+            foreach ($table->getColumns() as $column) {
+                $options = $column->getPlatformOptions();
+
+                unset($options['charset'], $options['collation']);
+
+                $column->setPlatformOptions($options);
+            }
         }
     }
 
