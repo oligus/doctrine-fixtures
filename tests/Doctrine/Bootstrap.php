@@ -2,18 +2,9 @@
 
 namespace DoctrineFixtures\Tests\Doctrine;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\DBAL\Logging\EchoSQLLogger;
-use Doctrine\ORM\Configuration;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\Common\Annotations\AnnotationException;
-use Doctrine\ORM\ORMException;
-use Doctrine\ORM\Tools\ToolsException;
-use DoctrineFixtures\Tests\DumpSQLLogger;
+use Doctrine\ORM\ORMSetup;
 
 /**
  * Class Bootstrap
@@ -21,12 +12,6 @@ use DoctrineFixtures\Tests\DumpSQLLogger;
  */
 class Bootstrap
 {
-    /**
-     * Bootstrap constructor.
-     * @throws AnnotationException
-     * @throws ORMException
-     * @throws ToolsException
-     */
     public function __construct()
     {
         $paths = [ROOT_PATH . '/Doctrine/Entities'];
@@ -34,29 +19,22 @@ class Bootstrap
 
         $isDevMode = true;
 
-        $doctrineConfig = new Configuration();
-
-        $driver = new AnnotationDriver(new AnnotationReader(), $paths);
-        AnnotationRegistry::registerLoader('class_exists');
-
-        $doctrineConfig->setMetadataDriverImpl($driver);
-        $doctrineConfig->setProxyDir($proxyPaths);
+        $doctrineConfig = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode, $proxyPaths);
         $doctrineConfig->setProxyNamespace('CX\Proxies');
         $doctrineConfig->setAutoGenerateProxyClasses(true);
 
-        $cache = new ArrayCache;
-        $doctrineConfig->setQueryCacheImpl($cache);
+        // ORM 3.5+ on PHP 8.4 uses native lazy objects; symfony/var-exporter 8 dropped LazyGhost.
+        if (PHP_VERSION_ID >= 80400 && method_exists($doctrineConfig, 'enableNativeLazyObjects')) {
+            $doctrineConfig->enableNativeLazyObjects(true);
+        }
 
-        // $doctrineConfig->setSQLLogger(new DumpSQLLogger());
-        // $doctrineConfig->getSQLLogger();
+        $connection = DriverManager::getConnection([
+            'driver' => 'pdo_' . getenv('DB_CONNECTION'),
+            'path' => getenv('DB_DATABASE'),
+            'memory' => getenv('DB_DATABASE') === ':memory:',
+        ], $doctrineConfig);
 
-        $connectionParams = [
-            'url' => getenv('DB_CONNECTION') . ':///' . getenv('DB_DATABASE')
-        ];
-
-        $em = EntityManager::create($connectionParams, $doctrineConfig);
-
-        Manager::getInstance()->setEm($em);
+        Manager::getInstance()->setEm(new EntityManager($connection, $doctrineConfig));
     }
 
     public function run()

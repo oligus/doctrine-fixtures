@@ -163,7 +163,13 @@ class CsvLoader implements Loader
      */
     public function getTables(): array
     {
-        $tables = $this->em->getConnection()->getSchemaManager()->listTableNames();
+        $connection = $this->em->getConnection();
+
+        if (method_exists($connection, 'createSchemaManager')) {
+            $tables = $connection->createSchemaManager()->listTableNames();
+        } else {
+            $tables = $connection->getSchemaManager()->listTableNames();
+        }
 
         foreach ($this->files as $file) {
             $tables[] = $this->getTable($file);
