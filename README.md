@@ -42,3 +42,21 @@ $ mysqldump -h localhost -u username --password=password --xml -t database data_
 
 
 
+
+## Development
+
+A PHP CLI container with Composer is provided, so tests and linting do not depend on the host's PHP version.
+
+```bash
+docker compose run --rm php composer install
+docker compose run --rm php composer test
+docker compose run --rm php composer lint
+```
+
+To get a shell inside the container (the repo is mounted at `/app`; `exit` to leave):
+
+```bash
+docker compose run --rm php bash
+```
+
+The default is PHP 8.4. Run against another version with `PHP_VERSION`, e.g. `PHP_VERSION=8.1 docker compose run --rm php composer test`. Each version gets its own `vendor/` volume, separate from the host's.

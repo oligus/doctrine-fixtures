@@ -8,31 +8,30 @@ use JsonSerializable;
 /**
  * Class Users
  * @package Tests\Doctrine\Entities
- *
- * @ORM\Entity
- * @ORM\Table(name="users")
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'users')]
+#[ORM\Index(name: 'name_idx', columns: ['user_name'])]
 class Users implements JsonSerializable
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer", options={"comment":"The users unique id"})
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Id]
+    #[ORM\Column(name: 'id', type: 'integer', options: ['comment' => 'The users unique id'])]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
     /**
      * @var string
-     * @ORM\Column(name="user_name", type="string", length=50)
      */
+    #[ORM\Column(name: 'user_name', type: 'string', length: 50)]
     protected $userName;
 
     /**
      * @var Accounts
-     * @ORM\ManyToOne(targetEntity="Accounts", inversedBy="users")
      */
+    #[ORM\ManyToOne(targetEntity: Accounts::class, inversedBy: 'users')]
     protected $account;
 
     public function jsonSerialize(): array

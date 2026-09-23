@@ -6,42 +6,40 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
-use stdClass;
 
 /**
- * Class Users
+ * Class Accounts
  * @package Tests\Doctrine\Entities
- *
- * @ORM\Entity
- * @ORM\Table(name="accounts")
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'accounts')]
+#[ORM\Index(name: 'name_idx', columns: ['name'])]
 class Accounts implements JsonSerializable
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer", options={"comment":"The users unique id"})
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Id]
+    #[ORM\Column(name: 'id', type: 'integer', options: ['comment' => 'The users unique id'])]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
     /**
      * @var string
-     * @ORM\Column(name="name", type="string", length=50)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 50)]
     protected $name;
 
     /**
      * @var string
-     * @ORM\Column(name="type", type="string", length=10)
      */
+    #[ORM\Column(name: 'type', type: 'string', length: 10)]
     protected $type;
 
     /**
      * @var Collection
-     * @ORM\OneToMany(targetEntity="Users", mappedBy="account")
      */
+    #[ORM\OneToMany(targetEntity: Users::class, mappedBy: 'account')]
     protected $users;
 
     public function __construct()
@@ -49,9 +47,6 @@ class Accounts implements JsonSerializable
         $this->users = new ArrayCollection();
     }
 
-    /**
-     * @return stdClass
-     */
     public function jsonSerialize(): array
     {
         return [
@@ -65,6 +60,4 @@ class Accounts implements JsonSerializable
     {
         return $this->users;
     }
-
-
 }

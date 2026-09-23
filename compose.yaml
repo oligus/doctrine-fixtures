@@ -1,0 +1,18 @@
+services:
+  php:
+    build:
+      context: docker
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.4}
+    image: doctrine-fixtures-php:${PHP_VERSION:-8.4}
+    volumes:
+      - .:/app
+      # Keep the container's vendor/ apart from the host's, so installing
+      # under one PHP version does not break the other.
+      - vendor:/app/vendor
+      - composer-cache:/tmp/composer/cache
+
+volumes:
+  vendor:
+    name: doctrine-fixtures-vendor-${PHP_VERSION:-8.4}
+  composer-cache:

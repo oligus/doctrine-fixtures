@@ -45,13 +45,11 @@ abstract class TestCase extends PHPUnitTestCase
     protected function getClassMock($className, array $options = array())
     {
         $mock = $this->getMockBuilder($className)
-            ->setMethods(array_keys($options))
+            ->onlyMethods(array_keys($options))
             ->getMock();
 
         foreach($options as $method => $value) {
-            $mock->expects($this->any())
-                ->method($method)
-                ->will($this->returnValue($value));
+            $mock->method($method)->willReturn($value);
         }
 
         return $mock;

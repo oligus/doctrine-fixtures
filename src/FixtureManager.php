@@ -15,6 +15,7 @@ use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Platforms\SQLitePlatform;
+use Doctrine\DBAL\Schema\Schema;
 
 /**
  * Class FixtureManager
@@ -83,7 +84,50 @@ class FixtureManager
         $this->em->getUnitOfWork()->clear();
 
         $schemaTool = new SchemaTool($this->em);
-        $schemaTool->createSchema($this->em->getMetadataFactory()->getAllMetadata());
+        $metadata = $this->em->getMetadataFactory()->getAllMetadata();
+
+        if (!$this->driver instanceof SQLLite) {
+            $schemaTool->createSchema($metadata);
+            return;
+        }
+
+        $schema = $schemaTool->getSchemaFromMetadata($metadata);
+        $this->makeIndexNamesUnique($schema);
+
+        $connection = $this->em->getConnection();
+        foreach ($schema->toSql($connection->getDatabasePlatform()) as $sql) {
+            $connection->executeStatement($sql);
+        }
+    }
+
+    /**
+     * Prefix index names with their table name, for SQLite only.
+     *
+     * SQLite index names are unique per database, where MySQL's are unique per table. A
+     * mapping that declares the same index name on two entities - common in legacy schemas
+     * where names like `id` or `deleted` repeat across tables - is valid against MySQL but
+     * aborts schema creation on SQLite with "index <name> already exists". That forces
+     * projects to leave indexes out of their mappings entirely just to keep tests running.
+     *
+     * Renaming happens on the generated Schema rather than on the ClassMetadata, so it
+     * stays local to this call: the mappings are shared with the caller's EntityManager
+     * and must not be mutated. Fixtures address tables and columns, never index names.
+     *
+     * @param Schema $schema
+     */
+    private function makeIndexNamesUnique(Schema $schema): void
+    {
+        foreach ($schema->getTables() as $table) {
+            foreach (array_keys($table->getIndexes()) as $indexName) {
+                $index = $table->getIndex($indexName);
+
+                if ($index->isPrimary()) {
+                    continue;
+                }
+
+                $table->renameIndex($indexName, $table->getName() . '_' . $index->getName());
+            }
+        }
     }
 
     /**
